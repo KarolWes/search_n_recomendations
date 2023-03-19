@@ -1,5 +1,5 @@
 import csv
-from utilityModule import Statistics
+
 
 def analyze_movies(name):
     try:
@@ -27,8 +27,5 @@ def analyze_movies(name):
     return 1
 
 
-
 if __name__ == '__main__':
-    s = Statistics("ml-latest-small/ratings.csv")
-    print(s.mean_rating())
     print(analyze_movies("ml-latest-small/movies.csv"))
