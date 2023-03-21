@@ -1,5 +1,6 @@
 import numpy
 import pandas as pd
+import itertools
 
 
 def to_float(x):
@@ -56,7 +57,15 @@ def task2_4():
     data = data.groupby("movieId").rating.agg(["mean", "median"])
     data.columns=["rating_mean","rating_median"]
     print(data.head())
+    ans = []
+    for index, row in data.iterrows():
+        dict = {"id":index, "rating_mean": row["rating_mean"], "rating_median": row["rating_median"]}
+        ans.append(dict)
+    return ans
 
+def task2_5():
+    data = pd.read_csv("data/ratings_small.csv")
+    data = data.groupby("userId")
 
 
 if __name__ == "__main__":
@@ -66,4 +75,4 @@ if __name__ == "__main__":
     print("___")
     task2_3()
     print("___")
-    task2_4()
+    print(task2_4())
