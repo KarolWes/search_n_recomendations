@@ -99,4 +99,5 @@ if __name__ == "__main__":
     # print("___")
     # print(task2_4())
     # print("___")
-    task2_5(1, 5)
+    print(task2_5(1, 5))
+
