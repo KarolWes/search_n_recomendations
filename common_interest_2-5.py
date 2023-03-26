@@ -1,6 +1,6 @@
 import pandas as pd
 
-def task2_5(user: int, common_col_size: int):
+def common_interest(user: int, common_col_size: int):
     data = pd.read_csv("data/ratings_small.csv")
     data = data.groupby("userId")
     all_users = list(data.groups.keys())
@@ -23,4 +23,4 @@ def task2_5(user: int, common_col_size: int):
         print("User with given Id doesn't exist")
 
 if __name__ == "__main__":
-    task2_5(1, 5)
+    common_interest(1, 5)
