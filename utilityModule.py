@@ -1,3 +1,4 @@
+import numpy
 import pandas as pd
 
 
@@ -6,6 +7,7 @@ def calculate_mode(data):
     for entry in data:
         values[entry] = values.get(entry, 0) + 1
     return sorted(values.items(), key=lambda x: x[1], reverse=True)[0][0]
+
 
 class Statistics:
     def __init__(self, name):
@@ -33,13 +35,13 @@ class Statistics:
             for line in lines:
                 line = line.split(',')
                 ratings.append(float(line[2]))
-                s+=float(line[2])
-            mean = s/len(ratings)
+                s += float(line[2])
+            mean = s / len(ratings)
             ratings.sort()
-            if len(ratings)%2 == 0:
-                median = (ratings[len(ratings)//2-1] + ratings[len(ratings)//2])/2
+            if len(ratings) % 2 == 0:
+                median = (ratings[len(ratings) // 2 - 1] + ratings[len(ratings) // 2]) / 2
             else:
-                median = ratings[len(ratings)//2]
+                median = ratings[len(ratings) // 2]
             mode = calculate_mode(ratings)
 
         except ValueError:
@@ -55,7 +57,8 @@ class Statistics:
             f.close()
         return mean, median, mode
 
-def common_interest(user: int, common_col_size: int, filename:str, printout=True):
+
+def common_interest(user: int, common_col_size: int, filename: str, printout=True):
     data = pd.read_csv(filename)
     data = data.groupby("userId")
     all_users = list(data.groups.keys())
@@ -80,3 +83,16 @@ def common_interest(user: int, common_col_size: int, filename:str, printout=True
     except ValueError:
         print("User with given Id doesn't exist")
         return
+
+
+def movies_cleanup(filename: str):
+    data = pd.read_csv(filename, usecols=['id', 'title', 'genres'], dtype={'id':'int64', 'title':'string'})[['id', 'title', 'genres']]
+    data = data.rename(columns={"id":"movieId"})
+    return data
+
+
+def to_float(x):
+    try:
+        return float(x)
+    except (ValueError, TypeError):
+        return numpy.nan

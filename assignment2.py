@@ -1,13 +1,9 @@
 import numpy
 import pandas as pd
-from utilityModule import common_interest
+from utilityModule import common_interest, to_float
 
 
-def to_float(x):
-    try:
-        return float(x)
-    except (ValueError, TypeError):
-        return numpy.nan
+
 
 
 def task2_1():
@@ -37,7 +33,7 @@ def task2_2():
 
 
 def task2_3():
-    data = pd.read_csv("data/movies_metadata.csv")
+    data = pd.read_csv("data/movies.csv")
     print(type(data))
     print(data.iloc[0])
     print()
