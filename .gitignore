@@ -1,3 +1,4 @@
-/data
-/.idea
-/venv
+data/*
+/.idea/
+/venv/
+!data/movies.csv
