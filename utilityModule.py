@@ -86,8 +86,9 @@ def common_interest(user: int, common_col_size: int, filename: str, printout=Tru
 
 
 def movies_cleanup(filename: str):
-    data = pd.read_csv(filename, usecols=['id', 'title', 'genres'], dtype={'id':'int64', 'title':'string'})[['id', 'title', 'genres']]
-    data = data.rename(columns={"id":"movieId"})
+    data = pd.read_csv(filename, usecols=['id', 'title', 'genres'], dtype={'id': 'int64', 'title': 'string'})[
+        ['id', 'title', 'genres']]
+    data = data.rename(columns={"id": "movieId"})
     return data
 
 
