@@ -26,15 +26,15 @@ def cross_reference(user_id: int, common_size: int):
 def norm(vec, p: int = 2):
     func = lambda x: pow(abs(x), p)
     res = sum(func(vec))
-    return pow(res, (1/p))
+    return pow(res, (1 / p))
 
 
 def dot(X, Y):
     if len(X) != len(Y):
         raise NameError("Vectors of different length")
-    tmp =[]
+    tmp = []
     for i in range(len(X)):
-        tmp.append(X[i]*Y[i])
+        tmp.append(X[i] * Y[i])
     return sum(tmp)
 
 
@@ -44,7 +44,7 @@ def cos_simil(X, Y):
         d = dot(X, Y)
         nX = norm(X)
         nY = norm(Y)
-        ans = d/(nX*nY)
+        ans = d / (nX * nY)
     except NameError as nerr:
         print(nerr)
     except ZeroDivisionError:
@@ -92,9 +92,11 @@ def predict_ratings(user_id: int, num_similar_users: int, num_movies: int):
     similar_user_ratings = ratings[ratings['userId'].isin(most_similar_users)]
     similar_user_ratings = similar_user_ratings[~similar_user_ratings['movieId'].isin(index_list)]
 
+    to_predict = [*set(similar_user_ratings['movieId'].values.tolist())]
+
     # compute the predicted rating for each movie
     predicted_ratings = []
-    for movie_id in index_list:
+    for movie_id in to_predict:
         movie_ratings = similar_user_ratings[similar_user_ratings['movieId'] == movie_id]['rating']
         if len(movie_ratings) > 0:
             predicted_rating = movie_ratings.mean()
@@ -117,11 +119,12 @@ def predict_ratings(user_id: int, num_similar_users: int, num_movies: int):
 
 
 if __name__ == "__main__":
-
-     print("Give the id of a user you want to predict for: ", end="")
-     user_id = int(input())
-     print(f"Some of the movies user {user_id} has rated:")
-     reviews = review_list(user_id)
-     print(reviews.head(10))
-     print("Highest predicted relevance score")
-     print(predict_ratings(5, 15, 15))
+    print("Give the id of a user you want to predict for: ", end="")
+    user_id = int(input())
+    print(f"Some of the movies user {user_id} has rated:")
+    reviews = review_list(user_id)
+    print(reviews.head(10))
+    print("Highest predicted relevance score")
+    ans = predict_ratings(5, 15, 25)
+    print(ans)
+    ans.to_csv("data/output.csv", index=False)
