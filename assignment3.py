@@ -3,15 +3,7 @@ import numpy as np
 from utilityModule import *
 
 
-def review_list(user_id: int):
-    ratings = pd.read_csv("data/ratings_small.csv")
-    user_ratings = ratings[ratings['userId'] == user_id]
-    if len(user_ratings) == 0:
-        print(f"User with given id ({user_id}) does not exist")
-        return None
-    movies = movies_cleanup("data/movies.csv")
-    review_movie = user_ratings.merge(movies, how="left")
-    return review_movie
+
 
 
 def cross_reference(user_id: int, common_size: int):
@@ -68,7 +60,7 @@ def clean_vectors(X, Y):
 
 def predict_ratings(user_id: int, num_similar_users: int, num_movies: int):
     # get the movie ratings for the user of interest
-    index_list = review_list(user_id)[['movieId']].T.values.tolist()[0]
+    index_list = review_list(user_id, "data/reviews_small.csv", "data/movies.csv")[['movieId']].T.values.tolist()[0]
     cross_tab = cross_reference(user_id, num_similar_users)[index_list]
 
     # get the list of the users with similar ratings
@@ -122,7 +114,7 @@ if __name__ == "__main__":
     print("Give the id of a user you want to predict for: ", end="")
     user_id = int(input())
     print(f"Some of the movies user {user_id} has rated:")
-    reviews = review_list(user_id)
+    reviews = review_list(user_id, "data/reviews_small.csv", "data/movies.csv")
     print(reviews.head(10))
     print("Highest predicted relevance score")
     ans = predict_ratings(5, 15, 25)
