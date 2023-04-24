@@ -1,5 +1,3 @@
-import pandas as pd
-
 from utilityModule import *
 
 
@@ -14,7 +12,7 @@ def private_interest_genres(reviews: pd.DataFrame):
 def predict_simple(predict_size: int, reviews, genres_values: pd.DataFrame, mov_filename: str):
     reviewed = reviews["movieId_y"].T.values.tolist()
     all_movies = pd.read_csv(mov_filename)[["id", "original_title", "genres"]]
-    to_predict = all_movies[~all_movies.id.isin(reviewed)]
+    to_predict = all_movies[~all_movies.id.isin(reviewed)].copy()
     to_predict["genres"] = to_predict["genres"].apply(cleanup_genres)
     overlap = []
     user_genre_list = genres_values.index
