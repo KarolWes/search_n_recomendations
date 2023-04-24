@@ -19,8 +19,10 @@ def predict_simple(predict_size: int, reviews, genres_values: pd.DataFrame, mov_
     overlap = []
     user_genre_list = genres_values.index
     for _, line in to_predict.iterrows():
-        overlap.append(overlap_size(user_genre_list, line["genres"]))
-    to_predict["overlap"] = overlap
+        overlap_length = overlap_size(user_genre_list, line["genres"]);
+        if overlap_length > 0:
+            overlap.append(overlap_length)
+    to_predict["overlap"] = pd.Series(overlap)
     to_predict = to_predict.sort_values(by=["overlap"], ascending=False)
     return to_predict.head(predict_size)
 
@@ -36,7 +38,7 @@ if __name__ == "__main__":
     pd.set_option('display.max_columns', None)
     print("Give the id of a user you want to predict for: ", end="")
     user_id = int(input())
-    rev = get_reviews(user_id, "data/ratings.csv", "data/movies.csv")
-    print(rev)
+    rev = get_reviews(user_id, "data/ratings_small.csv", "data/movies.csv")
+    #print(rev)
     genres_value_table = private_interest_genres(rev)
     print(predict_simple(10, rev, genres_value_table, "data/movies.csv"))
