@@ -1,5 +1,3 @@
-import pandas as pd
-
 from utilityModule import *
 
 
@@ -12,7 +10,9 @@ def private_interest_genres(reviews: pd.DataFrame):
 
 
 def predict_simple(predict_size: int, reviews, genres_values: pd.DataFrame, mov_filename: str):
+
     to_predict = get_to_predict_movies(mov_filename, reviews)
+
     overlap = []
     user_genre_list = genres_values.index
     for _, line in to_predict.iterrows():
