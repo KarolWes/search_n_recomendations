@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import constants as cs
 from utilityModule import *
 
 
@@ -7,8 +8,8 @@ from utilityModule import *
 
 
 def cross_reference(user_id: int, common_size: int):
-    ratings = pd.read_csv("data/ratings_small.csv")
-    common_users = common_interest(user_id, common_size, "data/ratings_small.csv", printout=False)
+    ratings = pd.read_csv(cs.RATINGS_SMALL_FILE)
+    common_users = common_interest(user_id, common_size, cs.RATINGS_SMALL_FILE, printout=False)
     common_users.append(user_id)
     ratings = ratings[ratings['userId'].isin(common_users)]
     cross = ratings.pivot_table(values="rating", index="userId", columns="movieId")
@@ -60,7 +61,7 @@ def clean_vectors(X, Y):
 
 def predict_ratings(user_id: int, num_similar_users: int, num_movies: int):
     # get the movie ratings for the user of interest
-    index_list = review_list(user_id, "data/reviews_small.csv", "data/movies.csv")[['movieId']].T.values.tolist()[0]
+    index_list = review_list(user_id, cs.RATINGS_SMALL_FILE, cs.MOVIE_FILE)[['movieId']].T.values.tolist()[0]
     cross_tab = cross_reference(user_id, num_similar_users)[index_list]
 
     # get the list of the users with similar ratings
@@ -80,7 +81,7 @@ def predict_ratings(user_id: int, num_similar_users: int, num_movies: int):
     most_similar_users = [x[0] for x in similarity_scores][:num_similar_users]
 
     # get the ratings for the most similar users
-    ratings = pd.read_csv("data/ratings_small.csv")
+    ratings = pd.read_csv(cs.RATINGS_SMALL_FILE)
     similar_user_ratings = ratings[ratings['userId'].isin(most_similar_users)]
     similar_user_ratings = similar_user_ratings[~similar_user_ratings['movieId'].isin(index_list)]
 
@@ -103,7 +104,7 @@ def predict_ratings(user_id: int, num_similar_users: int, num_movies: int):
     top_movies = predicted_ratings[:num_movies]
 
     # merge the movie titles and genres onto the list of top movies
-    movies = movies_cleanup("data/movies.csv")
+    movies = movies_cleanup(cs.MOVIE_FILE)
     top_movies = pd.DataFrame(top_movies, columns=['movieId', 'predicted_rating'])
     top_movies = top_movies.merge(movies, how='left')
 
@@ -114,9 +115,9 @@ if __name__ == "__main__":
     print("Give the id of a user you want to predict for: ", end="")
     user_id = int(input())
     print(f"Some of the movies user {user_id} has rated:")
-    reviews = review_list(user_id, "data/reviews_small.csv", "data/movies.csv")
+    reviews = review_list(user_id, cs.RATINGS_SMALL_FILE, cs.MOVIE_FILE)
     print(reviews.head(10))
     print("Highest predicted relevance score")
     ans = predict_ratings(5, 15, 25)
     print(ans)
-    ans.to_csv("data/output.csv", index=False)
+    ans.to_csv(cs.OUTPUT_FILE, index=False)
