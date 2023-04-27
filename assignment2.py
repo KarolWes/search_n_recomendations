@@ -1,9 +1,7 @@
 import numpy
 import pandas as pd
+import constants as cs
 from utilityModule import common_interest, to_float
-
-
-
 
 
 def task2_1():
@@ -53,7 +51,7 @@ def task2_3():
 
 
 def task2_4():
-    data = pd.read_csv("data/ratings_small.csv")
+    data = pd.read_csv(cs.RATINGS_SMALL_FILE)
     data = data.groupby("movieId").rating.agg(["mean", "median"])
     data.columns = ["rating_mean", "rating_median"]
     print(data.head())
@@ -75,5 +73,5 @@ if __name__ == "__main__":
     # print("___")
     # print(task2_4())
     # print("___")
-    print(common_interest(1, 5,"data/ratings_small.csv"))
+    print(common_interest(1, 5, cs.RATINGS_SMALL_FILE))
 

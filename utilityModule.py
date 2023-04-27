@@ -1,3 +1,5 @@
+import random
+
 import numpy
 import numpy as np
 import pandas as pd
@@ -157,6 +159,22 @@ def cleanup_genres(line: str):
         if el[0].strip("''") == "name":
             res.append(el[1].strip("''"))
     return res
+
+
+def split_dataset(filename, training_ratio):
+    if training_ratio > 1:
+        raise Exception("Training radio must be <= 1")
+    try:
+        dataset = pd.read_csv(filename)
+        dataset_len = len(dataset)
+        training_size = int(dataset_len * training_ratio)
+        dataset_arr = np.array(dataset)
+        random.shuffle(dataset_arr)
+        return pd.DataFrame(dataset[:training_size]), pd.DataFrame(dataset[training_size:])
+    except FileNotFoundError:
+        print("File not found")
+        return None
+
 
 
 def overlap_size(A, B):

@@ -1,3 +1,5 @@
+import pandas as pd
+import constants as cs
 from utilityModule import *
 
 
@@ -70,8 +72,7 @@ if __name__ == "__main__":
     pd.set_option('display.max_columns', None)
     print("Give the id of a user you want to predict for: ", end="")
     user_id = int(input())
-    rev = get_reviews(user_id, "data/ratings_small.csv", "data/movies.csv")
+    rev = get_reviews(user_id, cs.RATINGS_FILE, cs.MOVIE_FILE)
     print(rev)
     genres_value_table = private_interest_genres(rev)
-    print(predict_simple(10, rev, genres_value_table, "data/movies.csv"))
-    print(predict_with_genre_count(10, rev, genres_value_table, "data/movies.csv"))
+    print(predict_simple(10, rev, genres_value_table, cs.MOVIE_FILE))
