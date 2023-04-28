@@ -1,6 +1,5 @@
 import pandas as pd
 import constants as cs
-
 from utilityModule import *
 
 
@@ -13,17 +12,53 @@ def private_interest_genres(reviews: pd.DataFrame):
 
 
 def predict_simple(predict_size: int, reviews, genres_values: pd.DataFrame, mov_filename: str):
+
+    to_predict = get_to_predict_movies(mov_filename, reviews)
+
+    overlap = []
+    user_genre_list = genres_values.index
+    for _, line in to_predict.iterrows():
+        overlap_length = overlap_size(user_genre_list, line["genres"]);
+        if overlap_length > 0:
+            overlap.append(overlap_length)
+    to_predict["overlap"] = pd.Series(overlap)
+
+    # count the number of ratings for each remaining items
+    ratings = pd.read_csv("data/ratings_small.csv")
+    remaining_ratings = ratings.merge(to_predict, left_on="movieId", right_on="id")
+    item_counts = remaining_ratings.groupby("id").count()[["rating"]]
+    item_counts.columns = ["count"]
+
+    # Rank the remaining items by popularity
+    to_predict = to_predict.merge(item_counts, left_on="id", right_index=True)
+    to_predict = to_predict.sort_values(by=["count", "overlap"], ascending=False)
+
+    return to_predict.head(predict_size)
+
+
+def predict_with_genre_count(predict_size: int, reviews, genres_values: pd.DataFrame, mov_filename: str):
+    to_predict = get_to_predict_movies(mov_filename, reviews)
+    genre_counts = []
+
+    for _, line in to_predict.iterrows():
+        count = 0
+        for genre in line["genres"]:
+            if genre in genres_values.index:
+                count += genres_values.loc[genre][0]
+        genre_counts.append(count)
+
+    to_predict["genre_count"] = pd.Series(genre_counts)
+    to_predict = to_predict.sort_values(by=["genre_count"], ascending=False)
+
+    return to_predict.head(predict_size)
+
+
+def get_to_predict_movies(mov_filename, reviews):
     reviewed = reviews["movieId_y"].T.values.tolist()
     all_movies = pd.read_csv(mov_filename)[["id", "original_title", "genres"]]
     to_predict = all_movies[~all_movies.id.isin(reviewed)]
     to_predict["genres"] = to_predict["genres"].apply(cleanup_genres)
-    overlap = []
-    user_genre_list = genres_values.index
-    for _, line in to_predict.iterrows():
-        overlap.append(overlap_size(user_genre_list, line["genres"]))
-    to_predict["overlap"] = overlap
-    to_predict = to_predict.sort_values(by=["overlap"], ascending=False)
-    return to_predict.head(predict_size)
+    return to_predict
 
 
 def get_reviews(user_id: int, rev_filename: str, mov_filename: str):
