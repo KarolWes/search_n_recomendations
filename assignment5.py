@@ -1,3 +1,5 @@
+import pandas as pd
+
 import constants as cs
 from utilityModule import *
 
@@ -15,7 +17,7 @@ def get_user_ratings(dataframe):
 
 
 # Calculate the similarity between two users based on their movie ratings
-def calculate_similarity(user1, user2, us_ratings):
+def calculate_similarity(user1, user2, us_ratings, user_ratings):
     if user1 not in us_ratings or user2 not in us_ratings:
         return 0
     movies1 = set(user_ratings[user1].keys())
@@ -38,12 +40,12 @@ def calculate_similarity(user1, user2, us_ratings):
 
 
 # predict the rating of the user for a movie
-def predict_rating(user_id, movie_id, us_ratings):
+def predict_rating(user_id, movie_id, us_ratings, user_ratings):
     numerator = 0
     denominator = 0
     for other_user in us_ratings:
         if other_user != user_id and movie_id in us_ratings[other_user]:
-            similarity = calculate_similarity(user_id, other_user, us_ratings)
+            similarity = calculate_similarity(user_id, other_user, us_ratings, user_ratings)
             numerator += similarity * us_ratings[other_user][movie_id]
             denominator += similarity
     if denominator == 0:
@@ -52,14 +54,26 @@ def predict_rating(user_id, movie_id, us_ratings):
 
 
 # Make predictions for each user-item pair in the test set
-def make_predictions(test_df, us_ratings):
+def make_predictions(test_df, us_ratings, user_ratings):
     predictions = []
     for index, row in test_df.iterrows():
         user_id = row["userId"]
         movie_id = row["movieId"]
-        prediction = predict_rating(user_id, movie_id, us_ratings)
+        prediction = predict_rating(user_id, movie_id, us_ratings, user_ratings)
         predictions.append(prediction)
     return predictions
+
+
+def predictions_readable(predictions, test_df):
+    movies = pd.read_csv(cs.MOVIE_FILE)[["title"]]
+    i = 0
+    for _, row in test_df.iterrows():
+        movie_id = int(row["movieId"])
+        p = predictions[i]
+        if p > 0:
+            movie_title = movies.iloc[movie_id, 0]
+            print(f"{movie_title}: {p}")
+        i+=1
 
 
 def compute_mea(test_df, predictions):
@@ -72,15 +86,21 @@ def compute_rmse(test_df, predictions):
     return np.sqrt(sum([(actual - pred) ** 2 for actual, pred in zip(actual_ratings, predictions)]) / len(actual_ratings))
 
 
-if __name__ == "__main__":
-    print("Enter training-set ratio between 0 and 1: ")
-    ratio = float(input())
+def task1(ratio: float):
     train_data, test_data = split_dataset(cs.RATINGS_SMALL_FILE, ratio)
     user_ratings = get_user_ratings(train_data)
-    ratings_predictions = make_predictions(test_data, user_ratings)
-    print(ratings_predictions)
+    ratings_predictions = make_predictions(test_data, user_ratings, user_ratings)
+    predictions_readable(ratings_predictions, test_data)
     mea = compute_mea(test_data, ratings_predictions)
     rmse = compute_rmse(test_data, ratings_predictions)
     print(mea)
     print(rmse)
+
+
+if __name__ == "__main__":
+    print("Enter training-set ratio between 0 and 1: ")
+    ratio = float(input())
+    task1(ratio)
+
+
 
