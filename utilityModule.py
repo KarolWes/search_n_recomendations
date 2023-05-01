@@ -1,6 +1,4 @@
-import random
 
-import numpy
 import numpy as np
 import pandas as pd
 
@@ -102,7 +100,7 @@ def to_float(x):
     try:
         return float(x)
     except (ValueError, TypeError):
-        return numpy.nan
+        return np.nan
 
 
 def generate_genre_dictionary_from_file(filename: str):
@@ -169,7 +167,9 @@ def split_dataset(filename, training_ratio):
         dataset_len = len(dataset)
         training_size = int(dataset_len * training_ratio)
         dataset_arr = np.array(dataset)
-        random.shuffle(dataset_arr)
+        np.random.shuffle(dataset_arr)
+        dataset = pd.DataFrame(dataset_arr)
+        dataset.columns = ["userId", "movieId", "rating", "timestamp"]
         return pd.DataFrame(dataset[:training_size]), pd.DataFrame(dataset[training_size:])
     except FileNotFoundError:
         print("File not found")
@@ -179,3 +179,5 @@ def split_dataset(filename, training_ratio):
 
 def overlap_size(A, B):
     return len(set(A).intersection(set(B)))
+
+
