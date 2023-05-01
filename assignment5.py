@@ -62,6 +62,16 @@ def make_predictions(test_df, us_ratings):
     return predictions
 
 
+def compute_mea(test_df, predictions):
+    actual_ratings = list(test_df["rating"])
+    return sum([abs(actual - pred) for actual, pred in zip(actual_ratings, predictions)]) / len(actual_ratings)
+
+
+def compute_rmse(test_df, predictions):
+    actual_ratings = list(test_df["rating"])
+    return np.sqrt(sum([(actual - pred) ** 2 for actual, pred in zip(actual_ratings, predictions)]) / len(actual_ratings))
+
+
 if __name__ == "__main__":
     print("Enter training-set ratio between 0 and 1: ")
     ratio = float(input())
@@ -69,4 +79,8 @@ if __name__ == "__main__":
     user_ratings = get_user_ratings(train_data)
     ratings_predictions = make_predictions(test_data, user_ratings)
     print(ratings_predictions)
+    mea = compute_mea(test_data, ratings_predictions)
+    rmse = compute_rmse(test_data, ratings_predictions)
+    print(mea)
+    print(rmse)
 
