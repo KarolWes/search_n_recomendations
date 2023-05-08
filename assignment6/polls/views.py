@@ -12,7 +12,8 @@ def get_firstpage(request):
 def handle_userid_input(request):
     userid = int(request.POST.get('user_id'))
     if userid:
-        ratings = pd.read_csv('polls/data/ratings_small.csv')
+        # add csv file
+        ratings = pd.read_csv('')
         if len(ratings[ratings['userId'] == userid]) == 0:
             template = render_firstpage_template('assignment6/firstpage.html', 'User not found!', request)
             return HttpResponse(template)
