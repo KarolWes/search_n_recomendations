@@ -1,0 +1,10 @@
+<h2>Assignment 6</h2>
+<form action="{% url 'handle_userid_input' %}" method="post">
+    {% csrf_token %}
+    <label for="user_id">Enter user id: </label>
+    <input id="user_id" name="user_id" type="number">
+    <input type="submit" value="Submit">
+    <div>
+        {{ error_message }}
+    </div>
+</form>
