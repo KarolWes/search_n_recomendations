@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader, TemplateDoesNotExist
 import pandas as pd
+import constants as cs
+from get_reviews import review_list, predict_ratings
 
 
 def get_firstpage(request):
@@ -13,8 +15,9 @@ def handle_userid_input(request):
     userid = int(request.POST.get('user_id'))
     if userid:
         # add csv file
-        ratings = pd.read_csv('')
-        if len(ratings[ratings['userId'] == userid]) == 0:
+        reviews = review_list(userid, cs.RATINGS_SMALL_FILE, cs.MOVIE_FILE)
+        ans = predict_ratings(userid, reviews, num_similar_users=15, num_movies=20)
+        if len(reviews[reviews['userId'] == userid]) == 0:
             template = render_firstpage_template('assignment6/firstpage.html', 'User not found!', request)
             return HttpResponse(template)
         else:

@@ -59,8 +59,7 @@ class Statistics:
         return mean, median, mode
 
 
-def common_interest(user: int, common_col_size: int, filename: str, printout=True):
-    data = pd.read_csv(filename)
+def common_interest(user: int, common_col_size: int, data:pd.DataFrame, printout=True):
     data = data.groupby("userId")
     all_users = list(data.groups.keys())
     try:
@@ -145,7 +144,9 @@ def review_list(user_id: int, rev_filename: str, mov_filename: str):
         print("File movies not found")
         return None
     movies.index += 1
-    review_movie = user_ratings.merge(movies, how="left", left_on="movieId", right_index=True)
+    review_movie = user_ratings.merge(movies, how="left", left_on="movieId", right_index=True)\
+        .sort_values("rating", ascending=False).dropna()
+
     return review_movie
 
 

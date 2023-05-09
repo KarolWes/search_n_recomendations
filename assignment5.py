@@ -127,7 +127,7 @@ def precision(data):
 
 
 def recall(data):
-    # true positive / false negative
+    # true positive / every relevant
     # x -> is; y -> should be
     upper = 0
     lower = 0
@@ -165,7 +165,7 @@ def task2():
     train_data, test_data = split_dataset(cs.RATINGS_SMALL_FILE, 0.2)
     train_data = add_titles(train_data, cs.MOVIE_FILE)
     test_data = add_titles(test_data, cs.MOVIE_FILE)
-    user_ratings = get_user_ratings(train_data)
+    user_ratings = get_user_ratings(train_data)-1
     ratings_predictions = make_predictions(test_data, user_ratings)
     clean = cleanup_predictions(ratings_predictions, test_data)
     print(len(clean))

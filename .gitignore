@@ -2,3 +2,4 @@ data/*
 /.idea/
 /venv/
 !data/movies.csv
+/assignment6/polls/data/
