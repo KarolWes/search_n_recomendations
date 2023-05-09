@@ -1,10 +1,9 @@
-import pandas as pd
-import constants as cs
+from assignment6.polls import constants as cs
 from utilityModule import *
 
 
 def private_interest_genres(reviews: pd.DataFrame):
-    genres = generate_genres_dictionary_from_df(reviews, "rating", 3.0)
+    genres = generate_dictionary_from_df(reviews, "rating", 3.0)
     if len(genres.keys()) == 0:
         return -1
     df = pd.DataFrame.from_dict(genres, orient="index", columns=["Count"])

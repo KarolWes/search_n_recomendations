@@ -1,6 +1,4 @@
-import pandas as pd
-import numpy as np
-import constants as cs
+from assignment6.polls import constants as cs
 from utilityModule import *
 
 
@@ -106,6 +104,7 @@ def predict_ratings(user_id: int, review_list:pd.DataFrame, num_similar_users: i
     top_movies = pd.DataFrame(predicted_ratings, columns=['movieId', 'predicted_rating']).merge(movies, how='left').dropna()\
         .sort_values("predicted_rating", ascending=False)[:num_movies]
 
+
     return top_movies
 
 
@@ -118,5 +117,9 @@ if __name__ == "__main__":
     print(reviews.head(10))
     print("Highest predicted relevance score")
     ans = predict_ratings(user_id, reviews, num_similar_users=15, num_movies=20)
+    cast = pd.read_csv(cs.CREDIT_FILE, usecols=['cast', 'id'])[['id','cast']]
+    ans = ans.merge(cast, how="left", left_on="movieId", right_on="id")
+    cast = extract_cast(ans)
+    ans = ans.drop("cast", axis=1)
+    ans = ans.merge(cast, left_on="movieId", right_index=True)
     print(ans)
-    ans.to_csv(cs.OUTPUT_FILE, index=False)
