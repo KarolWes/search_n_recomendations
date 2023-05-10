@@ -8,10 +8,10 @@ table{
     background: aqua;
 }
 th{
-    background: cadetblue;
+    background: cornflowerblue;
 }
 body{
-    background: blue;
+    background: cadetblue;
 }
 .header{
     text-align: center;
@@ -22,5 +22,5 @@ body{
 }
 .content{
     text-align: center;
-    color: aqua;
+    color: darkslateblue;
 }

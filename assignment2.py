@@ -31,7 +31,7 @@ def task2_2():
 
 
 def task2_3():
-    data = pd.read_csv("data/movies.csv")
+    data = pd.read_csv("data_old/movies.csv")
     print(type(data))
     print(data.iloc[0])
     print()

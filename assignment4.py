@@ -23,7 +23,7 @@ def predict_simple(predict_size: int, reviews, genres_values: pd.DataFrame, mov_
     to_predict["overlap"] = pd.Series(overlap)
 
     # count the number of ratings for each remaining items
-    ratings = pd.read_csv("data/ratings_small.csv")
+    ratings = pd.read_csv("data_old/ratings_small.csv")
     remaining_ratings = ratings.merge(to_predict, left_on="movieId", right_on="id")
     item_counts = remaining_ratings.groupby("id").count()[["rating"]]
     item_counts.columns = ["count"]

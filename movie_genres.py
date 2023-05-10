@@ -28,4 +28,4 @@ def analyze_movies(name):
 
 
 if __name__ == '__main__':
-    print(analyze_movies("data/movies.csv"))
+    print(analyze_movies("data_old/movies.csv"))

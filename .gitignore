@@ -1,5 +1,5 @@
-data/*
+data_old/*
 /.idea/
 /venv/
-!data/movies.csv
+!data_old/movies.csv
 /assignment6/polls/data/

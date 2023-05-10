@@ -1,7 +1,7 @@
 import pandas as pd
 
 def common_interest(user: int, common_col_size: int):
-    data = pd.read_csv("data/ratings_small.csv")
+    data = pd.read_csv("data_old/ratings_small.csv")
     data = data.groupby("userId")
     all_users = list(data.groups.keys())
     try:

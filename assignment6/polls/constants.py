@@ -1,11 +1,11 @@
 # well known constants
 
-# data
-MOVIE_FILE = "C:/Users/Karol/Documents/Python Scripts/search&recomandation/assignment6/polls/data/movies.csv"
-RATINGS_SMALL_FILE = "C:/Users/Karol/Documents/Python Scripts/search&recomandation/assignment6/polls/data/ratings_small.csv"
+# data_old
+MOVIE_FILE = "polls/data/movies.csv"
+RATINGS_SMALL_FILE = "polls/data/ratings_small.csv"
 RATINGS_FILE = ""
-RECOMENDATION_SITE_TEMPLATE ="C:/Users/Karol/Documents/Python Scripts/search&recomandation/assignment6/polls/templates/assignment6/secondpage.html"
-CREDIT_FILE = "C:/Users/Karol/Documents/Python Scripts/search&recomandation/assignment6/polls/data/credits.csv"
+CREDIT_FILE = "polls/data/credits.csv"
+RECOMENDATION_SITE_TEMPLATE = "assignment6/secondpage.html"
 API_KEY = "a24c6dc45c80e92d954b8f95378bb27a"
 
 # macros
