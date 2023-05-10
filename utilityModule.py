@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 
@@ -59,8 +58,7 @@ class Statistics:
         return mean, median, mode
 
 
-def common_interest(user: int, common_col_size: int, filename: str, printout=True):
-    data = pd.read_csv(filename)
+def common_interest(user: int, common_col_size: int, data: pd.DataFrame, printout=True):
     data = data.groupby("userId")
     all_users = list(data.groups.keys())
     try:
@@ -88,8 +86,9 @@ def common_interest(user: int, common_col_size: int, filename: str, printout=Tru
 
 def movies_cleanup(filename: str):
     try:
-        data = pd.read_csv(filename, usecols=['id', 'title', 'genres'], dtype={'id': 'int64', 'title': 'string'})[
-            ['id', 'title', 'genres']]
+        data = pd.read_csv(filename, usecols=['id', 'title', 'genres', 'overview', 'poster_path'],
+                           dtype={'id': 'int64', 'title': 'string'})[
+            ['id', 'title', 'genres', 'overview', 'poster_path']]
     except FileNotFoundError:
         raise FileNotFoundError
     data = data.rename(columns={"id": "movieId"})
@@ -115,18 +114,39 @@ def generate_genre_dictionary_from_file(filename: str):
     return genres
 
 
-def generate_genres_dictionary_from_df(data: pd.DataFrame, param_col: str, param_val, col_name="genres", ):
-    genres = {}
+def generate_dictionary_from_df(data: pd.DataFrame, param_col: str, param_val, col_name="genres", ):
+    output = {}
     for _, line in data.iterrows():
         if line[param_col] > param_val:
-            g = line["genres"]
+            g = line[col_name]
             if type(g) == str:
                 g = g.strip("[]").split(", ")
                 for el in g:
                     el = el.strip("{}").split(": ")
                     if el[0].strip("''") == "name":
-                        genres[el[1].strip("''")] = genres.get(el[1].strip("''"), 0) + 1
-    return genres
+                        output[el[1].strip("''")] = output.get(el[1].strip("''"), 0) + 1
+    return output
+
+
+def extract_cast(data: pd.DataFrame, col_name="cast", lim=4):
+    output = {}
+    for _, line in data.iterrows():
+        cast = line[col_name]
+        id = line["movieId"]
+        if type(cast) == str:
+            output[id] = []
+            cast = cast.strip("[]").split(", ")
+            for member in cast:
+                member = member.strip("{}").split(", ")
+                for field in member:
+                    field = field.split(": ")
+                    if field[0].strip("''") == "name":
+                        output[id].append(field[1].strip("''"))
+                if len(output[id]) > 4:
+                    break
+    res = pd.DataFrame([output]).T
+    res.columns = ["cast"]
+    return res
 
 
 def review_list(user_id: int, rev_filename: str, mov_filename: str):
@@ -145,7 +165,9 @@ def review_list(user_id: int, rev_filename: str, mov_filename: str):
         print("File movies not found")
         return None
     movies.index += 1
-    review_movie = user_ratings.merge(movies, how="left", left_on="movieId", right_index=True)
+    review_movie = user_ratings.merge(movies, how="left", left_on="movieId", right_index=True) \
+        .sort_values("rating", ascending=False).dropna()
+
     return review_movie
 
 
@@ -176,8 +198,5 @@ def split_dataset(filename, training_ratio):
         return None
 
 
-
 def overlap_size(A, B):
     return len(set(A).intersection(set(B)))
-
-

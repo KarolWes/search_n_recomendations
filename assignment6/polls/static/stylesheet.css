@@ -1,0 +1,26 @@
+table, th, td {
+    border: 2px solid black;
+}
+td {
+    text-align: center;
+}
+table{
+    background: aqua;
+}
+th{
+    background: cornflowerblue;
+}
+body{
+    background: cadetblue;
+}
+.header{
+    text-align: center;
+    color: yellow;
+}
+.footer{
+    color: khaki;
+}
+.content{
+    text-align: center;
+    color: darkslateblue;
+}

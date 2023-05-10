@@ -1,4 +1,4 @@
 from utilityModule import Statistics
 
-s = Statistics("data/ratings.csv")
+s = Statistics("data_old/ratings.csv")
 print(s.mean_rating())

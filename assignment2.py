@@ -1,6 +1,6 @@
 import numpy
 import pandas as pd
-import constants as cs
+from assignment6.polls import constants as cs
 from utilityModule import common_interest, to_float
 
 
@@ -31,7 +31,7 @@ def task2_2():
 
 
 def task2_3():
-    data = pd.read_csv("data/movies.csv")
+    data = pd.read_csv("data_old/movies.csv")
     print(type(data))
     print(data.iloc[0])
     print()
